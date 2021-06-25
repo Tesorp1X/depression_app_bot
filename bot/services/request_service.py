@@ -3,6 +3,11 @@ import os
 
 
 class RequestService:
+    """
+        This service is not being used until v1.0.
+
+        In development...
+    """
 
     def __init__(self):
         self.__SERVER_IP = str(os.getenv("SERVER_IP"))

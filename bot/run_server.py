@@ -17,4 +17,7 @@ storage = MemoryStorage()
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot, storage=storage)
 
-test = 'hey'
+
+if __name__ == '__main__':
+
+    executor.start_polling(dp, skip_updates=True)
