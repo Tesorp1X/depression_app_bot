@@ -1,10 +1,9 @@
 import logging
 import os
-import re
+
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.dispatcher import FSMContext
-from aiogram.types import ContentTypes
-from aiogram import Bot, Dispatcher, executor, types
+
+from aiogram import Bot, Dispatcher, executor
 
 API_TOKEN = os.getenv("API_TOKEN")
 

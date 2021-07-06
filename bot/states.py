@@ -2,7 +2,13 @@ from aiogram.dispatcher.filters.state import StatesGroup, State
 
 
 class GeneralStates(StatesGroup):
+    """
+        Any technical states that can't go in any group.
+    """
     waiting_for_code = State()
+
+
+class NewNoteStates(StatesGroup):
     waiting_for_note = State()
     waiting_for_description = State()
 
