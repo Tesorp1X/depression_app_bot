@@ -1,4 +1,4 @@
-aiogram==2.13
+aiogram==2.14.2
 aiohttp==3.7.4.post0
 async-timeout==3.0.1
 attrs==21.2.0
@@ -14,4 +14,4 @@ setuptools==57.0.0
 typing-extensions==3.10.0.0
 urllib3==1.26.5
 yarl==1.6.3
-sqlalchemy==1.4.19
+peewee~=3.14.4

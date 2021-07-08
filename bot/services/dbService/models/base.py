@@ -1,15 +1,20 @@
-from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, TIMESTAMP
+from peewee import PostgresqlDatabase, Model, SqliteDatabase
 
-Base = declarative_base()
+from bot.config import DATABASE_USER, DATABASE_HOST, DATABASE_NAME, DATABASE_PORT, DATABASE_PASSWORD
+
+"""
+db = PostgresqlDatabase(
+    database=DATABASE_NAME,
+    user=DATABASE_USER,
+    password=DATABASE_PASSWORD,
+    host=DATABASE_HOST,
+    port=DATABASE_PORT
+)
+"""
+
+db = SqliteDatabase("C:/Users/GAYmeR/Documents/prog/depression_app/bot_data.db")
 
 
-class BaseModel(Base):
-    __abstract__ = True
-
-    id = Column(Integer, nullable=False, unique=True, primary_key=True, autoincrement=True)
-    created_at = Column(TIMESTAMP, nullable=False)
-    updated_at = Column(TIMESTAMP, nullable=False)
-
-    def __repr__(self):
-        return "<{0.__class__.__name__}(id={0.id!r})>".format(self)
+class BaseModel(Model):
+    class Meta:
+        database = db
