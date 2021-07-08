@@ -5,6 +5,7 @@ import re
 
 from bot.config import dp
 from bot.states import NewNoteStates, EditNoteStates
+from bot.services.dbService.note_service import create_new_note
 
 
 @dp.message_handler(state=NewNoteStates.waiting_for_note)
@@ -14,7 +15,8 @@ async def new_note_message_handler(message: Message, state: FSMContext):
     pattern = re.compile(r"\d+\s[\w\s_-]+")
     if re.fullmatch(pattern, text.lower()):
         value, name = re.split(r' ', message.text, maxsplit=1)
-        # save data and ask
+        # save data and ask for description
+        create_new_note(name, value, message.from_user.id)
         await message.answer("note is saved.")
     elif re.fullmatch(r"\d+\s*", text.lower()):
         value = int(text)
@@ -32,6 +34,7 @@ async def new_note_name_message_handler(message: Message, state: FSMContext):
     name = message.text
     value = data.get("value")
     # save data and clear the context
+    create_new_note(name, value, message.from_user.id)
     data.pop("value")
     await message.answer("note is saved.")
     await state.set_data(data)
