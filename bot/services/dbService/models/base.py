@@ -12,7 +12,7 @@ db = PostgresqlDatabase(
 )
 """
 
-db = SqliteDatabase("C:/Users/GAYmeR/Documents/prog/depression_app/bot_data.db")
+db = SqliteDatabase("C:/Users/GAYmeR/Documents/prog/depression_app_bot/bot_data.db")
 
 
 class BaseModel(Model):

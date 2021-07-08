@@ -1,11 +1,14 @@
-from peewee import IntegerField, CharField, DateTimeField, TextField
+from peewee import IntegerField, CharField, DateTimeField, TextField, ForeignKeyField
 from datetime import datetime
 
 from .base import BaseModel
+from .user_model import UserModel
 
 
 class NoteModel(BaseModel):
     name = CharField(max_length=128)
+
+    author = ForeignKeyField(UserModel)
 
     value = IntegerField()
 
