@@ -1,12 +1,18 @@
 from aiogram.types import Message
 from bot.config import dp
 from bot.states import NewNoteStates
+from bot.services.dbService.account_service import register_new_user, is_user_exist
 
 
 @dp.message_handler(commands="start", state="*")
 async def hello_message_handler(message: Message):
     # TODO: ALTER THE MESSAGE TEXT
-    await message.answer("privet")
+    if not is_user_exist(message.from_user.id):
+        register_new_user(t_id=message.from_user.id)
+        await message.answer("privet")
+    else:
+        await message.answer("welcome back")
+
     await NewNoteStates.waiting_for_note.set()
 
 
