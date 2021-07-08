@@ -1,22 +1,18 @@
-import logging
-import os
+from aiogram import Dispatcher
 
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from bot.config import dp, executor, displayed_commands, bot
+from bot.services.dbService.helper import create_tables
+from bot.handlers import commands, messages, callbacks
 
-from aiogram import Bot, Dispatcher, executor
 
-API_TOKEN = os.getenv("API_TOKEN")
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-
-storage = MemoryStorage()
-
-# Initialize bot and dispatcher
-bot = Bot(token=API_TOKEN)
-dp = Dispatcher(bot, storage=storage)
+async def on_startup(dispatcher: Dispatcher):
+    """
+        Creates tables if they don't exist and sets displayed commands.
+    """
+    create_tables()
+    await bot.set_my_commands(commands=displayed_commands)
 
 
 if __name__ == '__main__':
-
-    executor.start_polling(dp, skip_updates=True)
+    executor.on_startup(on_startup)
+    executor.start_polling(dp)

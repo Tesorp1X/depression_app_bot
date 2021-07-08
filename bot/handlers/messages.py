@@ -3,7 +3,7 @@ from aiogram.dispatcher import FSMContext
 
 import re
 
-from bot.run_server import dp
+from bot.config import dp
 from bot.states import NewNoteStates, EditNoteStates
 
 
