@@ -2,8 +2,8 @@ from sqlite3 import InternalError
 
 from typing import Optional, List
 
-from .models.note_model import NoteModel
-from .models.user_model import UserModel
+from bot.services.dbService.models.note_model import NoteModel
+from bot.services.dbService.models.user_model import UserModel
 
 
 def create_new_note(name: str, value: int, author_t_id: int,

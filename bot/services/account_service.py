@@ -1,6 +1,6 @@
 from sqlite3 import InternalError
 
-from .models.user_model import UserModel
+from bot.services.dbService.models.user_model import UserModel
 
 
 def is_user_exist(t_id: int) -> bool:

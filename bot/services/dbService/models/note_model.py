@@ -1,8 +1,8 @@
 from peewee import IntegerField, CharField, DateTimeField, TextField, ForeignKeyField
 from datetime import datetime
 
-from .base import BaseModel
-from .user_model import UserModel
+from bot.services.dbService.models.base import BaseModel
+from bot.services.dbService.models.user_model import UserModel
 
 
 class NoteModel(BaseModel):
