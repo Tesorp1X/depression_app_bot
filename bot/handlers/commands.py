@@ -3,8 +3,8 @@ from aiogram.dispatcher import FSMContext
 
 from bot.config import dp
 from bot.states import NewNoteStates
-from bot.services.dbService.account_service import register_new_user, is_user_exist
-from bot.services.dbService.note_service import get_notes_for_user, get_note_by_id
+from bot.services.account_service import register_new_user, is_user_exist
+from bot.services.note_service import get_notes_for_user, get_note_by_id
 
 
 @dp.message_handler(commands="start", state="*")
@@ -47,19 +47,21 @@ async def more_message_handler(message: Message, state: FSMContext):
     note_id = int(message.text[5:])
 
     data = await state.get_data()
-
+    is_note_found = False
     if 'last_notes' in data.keys():
         last_notes = data.get('last_notes')
         for note in last_notes:
             if note.id == note_id:
                 that_note = note
-    else:
+                is_note_found = True
+
+    if not is_note_found:
         # last_notes = get_notes_for_user(t_id=message.from_user.id)
         # data['last_notes'] = last_notes
         that_note = get_note_by_id(note_id)
 
     description = "*Note description:*" + that_note.description \
-        if that_note.description else "*This not doesn't have a description.*"
+        if that_note.description else "*This note doesn't have a description.*"
     msg = f"*#{that_note.id} {that_note.name}@{that_note.created_at}*\n\n{description}"
 
     await message.answer(msg, parse_mode=ParseMode.MARKDOWN)

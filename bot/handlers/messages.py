@@ -5,7 +5,7 @@ import re
 
 from bot.config import dp
 from bot.states import NewNoteStates, EditNoteStates
-from bot.services.dbService.note_service import create_new_note
+from bot.services.note_service import create_new_note
 
 
 @dp.message_handler(state=NewNoteStates.waiting_for_note)
