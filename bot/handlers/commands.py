@@ -4,7 +4,7 @@ from aiogram.dispatcher import FSMContext
 from bot.config import dp
 from bot.states import NewNoteStates
 from bot.services.account_service import register_new_user, is_user_exist
-from bot.services.note_service import get_notes_for_user, get_note_by_id
+from bot.services.note_service import get_notes_for_user, get_note_by_id, delete_note_by_id
 
 
 @dp.message_handler(commands="start", state="*")
@@ -42,7 +42,7 @@ async def list_message_handler(message: Message, state: FSMContext):
 # TODO: MAKE A /menu COMMAND WITH EVERY FUNCTION AS CALLBACK QUERY BUTTONS
 
 
-@dp.message_handler(lambda message: message.text.startswith('/more'))
+@dp.message_handler(lambda message: message.text.startswith('/more'), state="*")
 async def more_message_handler(message: Message, state: FSMContext):
     note_id = int(message.text[5:])
 
@@ -59,6 +59,7 @@ async def more_message_handler(message: Message, state: FSMContext):
         # last_notes = get_notes_for_user(t_id=message.from_user.id)
         # data['last_notes'] = last_notes
         that_note = get_note_by_id(note_id)
+        data['last_notes'] = [that_note, ]
 
     description = "*Note description:*" + that_note.description \
         if that_note.description else "*This note doesn't have a description.*"
@@ -70,5 +71,12 @@ async def more_message_handler(message: Message, state: FSMContext):
 @dp.message_handler(lambda message: message.text.startswith('/del'))
 async def more_message_handler(message: Message, state: FSMContext):
     note_id = int(message.text[4:])
+    is_deleted = delete_note_by_id(note_id)
 
-    await message.answer("this function doesn't implemented yet.")
+    if is_deleted:
+        await message.answer(f"The note #{note_id} has been deleted.")
+        # TODO: also remove this note from context storage.
+        return
+
+    await message.answer("*ERROR: Internal error occurred during the process execution.*\n\n Please try later.",
+                         parse_mode=ParseMode.MARKDOWN)

@@ -39,3 +39,14 @@ def get_notes_for_user(t_id: int, amount=3) -> Optional[List[NoteModel]]:
 
 def get_note_by_id(note_id: int) -> Optional[NoteModel]:
     return NoteModel.get_or_none(id=note_id)
+
+
+def delete_note_by_id(note_id: int) -> bool:
+    note = NoteModel.get_or_none(id=note_id)
+
+    if note:
+        # NoteModel.delete_by_id(note_id)
+        note.delete_instance()
+        return True
+
+    return False
