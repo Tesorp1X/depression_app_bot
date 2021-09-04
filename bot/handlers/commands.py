@@ -1,6 +1,8 @@
 from aiogram.types import Message, ParseMode
 from aiogram.dispatcher import FSMContext
 
+from datetime import date, datetime, timedelta
+
 from bot.config import dp
 from bot.states import NewNoteStates
 from bot.services.account_service import register_new_user, is_user_exist
@@ -26,19 +28,28 @@ async def help_message_handler(message: Message):
     await message.answer("there is no help...")
 
 
-@dp.message_handler(commands="list", state="*")
+@dp.message_handler(commands=["list", "weeklist"], state="*")
 async def list_message_handler(message: Message, state: FSMContext):
     # TODO: ALTER THE MESSAGE TEXT
-    # TODO: ADD TOTAL MONEY SPEND THIS WEEK
     # get list from db and print
 
-    msg = "list of your spendings for the last month...\n\n"
+    msg = "*list of your recent spendings...\n\n*" if message.text == "list" else\
+        "*list of your spendings for the last week...\n\n*"
+
     template = "{name} -- {val} /more{id} /del{id}\n"
-    last_notes = get_notes_for_user(t_id=message.from_user.id)
+    total_template = "\n\nmoney spent this week so far... *{total} RUR*"
+    today = date.today()
+    start_of_the_week = datetime.combine(today - timedelta(days=today.weekday()), datetime.min.time())
+    last_notes = get_notes_for_user(t_id=message.from_user.id) if message.text == "list" else \
+        get_notes_for_user(t_id=message.from_user.id, since_that_date=start_of_the_week)
+    list_total = 0
+
     await state.update_data(last_notes=last_notes)
     for note in last_notes:
         msg += template.format(id=note.id, name=note.name, val=note.value)
-    await message.answer(msg)
+        list_total += note.value
+
+    await message.answer(msg + total_template.format(total=list_total), parse_mode=ParseMode.MARKDOWN)
 
 # TODO: MAKE A /menu COMMAND WITH EVERY FUNCTION AS CALLBACK QUERY BUTTONS
 

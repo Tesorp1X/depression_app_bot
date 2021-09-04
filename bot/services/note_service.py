@@ -1,4 +1,5 @@
 from sqlite3 import InternalError
+from datetime import date, datetime
 
 from typing import Optional, List
 
@@ -30,9 +31,12 @@ def create_new_note(name: str, value: int, author_t_id: int,
     return note.get_id()
 
 
-def get_notes_for_user(t_id: int, amount=3) -> Optional[List[NoteModel]]:
-    # TODO: check date
-    query = (NoteModel.select().join(UserModel).where(UserModel.t_id == t_id))
+def get_notes_for_user(t_id: int,
+                       since_that_date: datetime = datetime.combine(date.today(), datetime.min.time())) \
+        -> Optional[List[NoteModel]]:
+
+    predicate = (UserModel.t_id == t_id) & (NoteModel.created_at > since_that_date)
+    query = (NoteModel.select().join(UserModel).where(predicate))
 
     return [note for note in query]
 
