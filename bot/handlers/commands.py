@@ -73,15 +73,16 @@ async def more_message_handler(message: Message, state: FSMContext):
         that_note = get_note_by_id(note_id)
         data['last_notes'] = [that_note, ]
 
-    description = "*Note description:*" + that_note.description \
+    description = "*Note description:* " + that_note.description \
         if that_note.description else "*This note doesn't have a description.*"
     msg = f"*#{that_note.id} {that_note.name}@{that_note.created_at}*\n\n{description}"
-
+    # msg += f"\n\nif u want to edit note use /edit{that_note.id}"
+    msg += f"\n\nif u want to edit note's description use /description{that_note.id}"
     await message.answer(msg, parse_mode=ParseMode.MARKDOWN)
 
 
 @dp.message_handler(lambda message: message.text.startswith('/del'))
-async def more_message_handler(message: Message, state: FSMContext):
+async def delete_message_handler(message: Message, state: FSMContext):
     note_id = int(message.text[4:])
     is_deleted = delete_note_by_id(note_id)
 
@@ -92,3 +93,11 @@ async def more_message_handler(message: Message, state: FSMContext):
 
     await message.answer("*ERROR: Internal error occurred during the process execution.*\n\n Please try later.",
                          parse_mode=ParseMode.MARKDOWN)
+
+
+@dp.message_handler(lambda message: message.text.startswith('/description'), state=NewNoteStates.waiting_for_note)
+async def add_description_handler(message: Message, state: FSMContext):
+    await message.answer("add your description...")
+    note_id = int(message.text[12:])
+    await state.update_data(note_id=note_id)
+    await NewNoteStates.waiting_for_description.set()
