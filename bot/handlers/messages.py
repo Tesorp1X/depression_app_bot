@@ -8,23 +8,23 @@ from bot.states import NewNoteStates, EditNoteStates
 from bot.services.note_service import create_new_note
 
 
-@dp.message_handler(state=NewNoteStates.waiting_for_note)
+@dp.message_handler(lambda mes: not mes.text.startswith("/"), state=NewNoteStates.waiting_for_note)
 async def new_note_message_handler(message: Message, state: FSMContext):
     # parse
     text = message.text
-    pattern = re.compile(r"\d+\s[\w\s_-]+")
+    pattern = re.compile(r"\d+\s[\w\s\S_-]+")
     if re.fullmatch(pattern, text.lower()):
         value, name = re.split(r' ', message.text, maxsplit=1)
         # save data and ask for description
         create_new_note(name, value, message.from_user.id)
-        await message.answer("note is saved.")
+        await message.answer("note is saved. type /list to see recent notes.")
     elif re.fullmatch(r"\d+\s*", text.lower()):
         value = int(text)
         await state.update_data(value=value)
         await message.answer("what did you spent that much money on?")
         await EditNoteStates.waiting_for_new_name.set()
     else:
-        await message.answer("*ERROR: incorrect message.*\n\n pattern looks like that: \"value name\".",
+        await message.answer("*ERROR: incorrect message.*\n\npattern looks like that: \"value name\".",
                              parse_mode=ParseMode.MARKDOWN)
 
 
@@ -39,3 +39,8 @@ async def new_note_name_message_handler(message: Message, state: FSMContext):
     await message.answer("note is saved.")
     await state.set_data(data)
     await NewNoteStates.waiting_for_note.set()
+
+
+@dp.message_handler(lambda mes: mes.text.startswith("/"), state="*")
+async def garbage_collector_handler(message: Message, state: FSMContext):
+    await message.answer("Unknown command. Use /help to find out how to use this bot.")

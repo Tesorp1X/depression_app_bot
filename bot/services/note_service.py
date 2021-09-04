@@ -46,7 +46,12 @@ def delete_note_by_id(note_id: int) -> bool:
 
     if note:
         # NoteModel.delete_by_id(note_id)
-        note.delete_instance()
-        return True
+        try:
+            note.delete_instance()
+            return True
+        except InternalError as exc:
+            # TODO: notify admin.
+            print(exc)
+            return False
 
     return False

@@ -29,6 +29,7 @@ async def help_message_handler(message: Message):
 @dp.message_handler(commands="list", state="*")
 async def list_message_handler(message: Message, state: FSMContext):
     # TODO: ALTER THE MESSAGE TEXT
+    # TODO: ADD TOTAL MONEY SPEND THIS WEEK
     # get list from db and print
 
     msg = "list of your spendings for the last month...\n\n"
